@@ -37,6 +37,7 @@
   "include": [
     "./lib/**/*",
     "./src/**/*",
+    "./src/docs/swagger.yaml"
   ],
   "exclude": [
     "node_modules",

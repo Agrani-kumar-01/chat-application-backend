@@ -1,0 +1,157 @@
+openapi: "3.0.2"
+info:
+  version: 1.0.0
+  title: myChat  API
+servers:
+  - url: /myChat-api
+tags:
+  - name: User
+    description: Operations related to user registration and authentication
+
+paths:
+  /users/{id}:
+    get:
+      summary: Retrieve user by ID
+      operationId: getUserById
+      tags:
+        - User
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - $ref: "#/components/parameters/headerLanguage"
+        - $ref: "#/components/parameters/headerPlatform"
+        - $ref: "#/components/parameters/headerVersion"
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: objectId
+          description: Unique identifier of the user
+      responses:
+        200:
+          description: User details retried successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        format: objectId
+                        description: Unique identifier for the user
+                      firstName:
+                        type: string
+                        description: First name of the user
+                      lastName:
+                        type: string
+                        description: Last name of the user
+                      fullName:
+                        type: string
+                        description: Full name of the user
+                      email:
+                        type: string
+                        description: Email address of the user
+                      countryCode:
+                        type: string
+                        description: Country code of the user
+                      phone:
+                        type: string
+                        description: Phone number of the user
+                      formattedPhone:
+                        type: string
+                        description: Formatted version of the phone number
+                      secondaryCountryCode:
+                        type: string
+                        description: Country code for secondary phone
+                      secondaryPhone:
+                        type: string
+                        description: Secondary phone number of the user
+                      designation:
+                        type: string
+                        format: objectId
+                        description: Designation ID the user holds
+                      groups:
+                        type: array
+                        items:
+                          type: string
+                          format: objectId
+                        description: Array of group IDs the user belongs to
+                      permissions:
+                        type: object
+                        description: Object containing user permissions
+                      isReportingManager:
+                        type: boolean
+                        description: Indicates if the user is a reporting manager
+                      reportsTo:
+                        type: string
+                        description: User ID of the reporting manager
+                      avatar:
+                        type: string
+                        description: URL of the user's avatar
+                      description:
+                        type: string
+                        description: Description of the user
+        400:
+          $ref: "#/components/responses/BadRequestError"
+components:
+  parameters:
+    headerLanguage:
+      name: Accept-Language
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Language preference for the response
+    headerPlatform:
+      name: Platform
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Platform from which the request is made
+    headerVersion:
+      name: App-Version
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Application version making the request
+
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the operation was successful
+        message:
+          type: string
+          description: Message describing the result of the operation
+        errorCode:
+          type: string
+          description: Code representing the error, if any
+  responses:
+    BadRequestError:
+      description: Bad Request - The request was invalid or cannot be otherwise served
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: Invalid request parameters
+              errorCode:
+                type: string
+                example: ERR_BAD_REQUEST
+              details:
+                type: object
+                additionalProperties: true

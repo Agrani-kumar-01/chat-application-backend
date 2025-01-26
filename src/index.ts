@@ -4,13 +4,22 @@ import http from "http";
 import https from 'https';
 import fs from 'fs'
 import express, { Express } from 'express';
+import routes from './routes';
+import * as middleware from "./middleware"
+
 
 
 const app:Express = express();
 
+middleware.foundations(app);
+middleware.responseHeaders(app);
+middleware.swagger(app);
+middleware.validateHeaders(app);
 
+app.use('/myChat-api', routes);
 
-// app.use('/myChat-api', routes);
+middleware.errorHandling(app);
+
 
 
 let server: http.Server | https.Server = http.createServer(app);
